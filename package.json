@@ -1,0 +1,28 @@
+{
+  "name": "TIC-TAC-TOE",
+  "version": "2.0.0",
+  "description": "TIC-TAC-TOE With 3 modes 2 player, AI easy, and AI hard.",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch"
+  },
+  "keywords": [],
+  "author": "Lenard Mangay-ayam",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^1.0.0",
+    "jquery": "^3.3.1",
+    "vue-loader": "^15.2.6",
+    "vue-style-loader": "^4.1.1",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^4.16.2",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
+  }
+}
