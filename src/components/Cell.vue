@@ -1,5 +1,5 @@
 <template>
-<td :style="getStyle(id)" @click="$parent.placeTurn(id)">
+<td :style="getStyle()" @click="$parent.placeTurn(id)">
 	{{ value	}}
 </td>
 </template>
@@ -9,8 +9,11 @@ export default {
 	props: ['id'],
 
 	methods: {
-		getStyle: function(id) {
-
+		getStyle: function() {
+			if (this.cells[this.id]===0)
+				return {backgroundColor: 'black'}
+			else if (this.cells[this.id]===1)
+				return {backgroundColor: '#2d2d2d'}
 		}
 	},
 
