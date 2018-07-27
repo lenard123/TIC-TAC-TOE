@@ -137,7 +137,7 @@ export default function ai(cells, move, game) {
 				else if (this.isCorner(this.getPlace(1)))
 					return this.randomCorner()
 				else if (this.isSide(this.getPlace(1))){
-					if (this.isBeside(this.getPlace(1)))
+					if (this.isBeside(this.getPlace(0), this.getPlace(1)))
 						return this.getDiagonal(this.getPlace(0))
 					else
 						return this.getDiagonal(this.getPlace(2))

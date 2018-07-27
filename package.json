@@ -1,6 +1,6 @@
 {
   "name": "TIC-TAC-TOE",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "TIC-TAC-TOE With 3 modes 2 player, AI easy, and AI hard.",
   "private": true,
   "scripts": {
@@ -20,6 +20,12 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
+    "@babel/core": "^7.0.0-beta.54",
+    "@babel/preset-env": "^7.0.0-beta.54",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.0-beta.4",
+    "babel-preset-env": "^1.7.0",
+    "promise-polyfill": "^8.0.0",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"

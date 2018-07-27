@@ -1,4 +1,4 @@
-#TIC TAC TOE
+# TIC TAC TOE
 
 ### Description
 This Tic Tac Toe Has three game modes

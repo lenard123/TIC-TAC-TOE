@@ -31,6 +31,7 @@ export default{
 	border-width: 1px 0;
 	border-style: solid;	
 	border-bottom: 1px solid #2a2c2e;
+	z-index: 1;
 }
 
 .title {

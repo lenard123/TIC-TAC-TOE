@@ -1,3 +1,5 @@
+import 'promise-polyfill/src/polyfill';
+
 import Vue from 'vue'
 
 import VueRouter from 'vue-router'
@@ -17,8 +19,6 @@ Vue.component('lHeader', lHeader)
 Vue.use(VueRouter)
 Vue.use(Vuex)
 Vue.use(l)
-window.$ = window.jQuery = require('jquery');
-
 
 new Vue({
   router,

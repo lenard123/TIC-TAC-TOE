@@ -127,11 +127,11 @@ export default{
 	methods: {
 
 		aiTurn: function() {
-			let AI = ai(this.cells, this.move, this.logs[this.logs.length-1])
+			let ai1 = ai(this.cells, this.move, this.logs[this.logs.length-1])
 			if (this.mode === 0)
-				this.placeTurn(AI.getAIEasy(), true)
+				this.placeTurn(ai1.getAIEasy(), true)
 			else 
-				this.placeTurn(AI.getAIHard(), true)
+				this.placeTurn(ai1.getAIHard(), true)
 		},
 
 		addLogs: function(turn, place, move){
@@ -235,7 +235,7 @@ export default{
 
 		isGameOver: function() {
 			//CHECK IF THERES ALREADY A WINNER
-			for (var i in this.win_pattern) {
+			for (let i in this.win_pattern) {
 				let win_pattern = this.win_pattern[i].map((x)=>this.cells[x])
 				if (win_pattern.every(x=>x===0) || win_pattern.every(x=>x===1)) return true
 			}
