@@ -214,7 +214,7 @@ export default function ai(cells, move, game) {
 			if (!this.isCorner(corner)&&!this.isSide(side)) return false
 			for (var i in this.beside_patterns) 
 				if (this.beside_patterns[i][0]==corner)
-					return this.beside_patterns[i][0]==side||this.beside_patterns[i][1]==side
+					return this.beside_patterns[i][1]==side||this.beside_patterns[i][2]==side
 		},
 
 		isCorner: function(place) {
