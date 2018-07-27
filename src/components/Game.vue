@@ -1,32 +1,78 @@
 <template>
 <div class="container">
 	<l-header>{{ modes[mode] }}</l-header>
-	<center>
-		<h1>{{ players[turn] }} Turn</h1>
 
-		<table class="game-table">			
-			<tr>
-				<td v-on:click="placeTurn(0)" :style="getStyle(0)">{{ moves[cells[0]] }}</td>
-				<td v-on:click="placeTurn(1)" :style="getStyle(1)">{{ moves[cells[1]] }}</td>
-				<td v-on:click="placeTurn(2)" :style="getStyle(2)">{{ moves[cells[2]] }}</td>
-			</tr>
-			<tr>
-				<td v-on:click="placeTurn(3)" :style="getStyle(3)">{{ moves[cells[3]] }}</td>
-				<td v-on:click="placeTurn(4)" :style="getStyle(4)">{{ moves[cells[4]] }}</td>
-				<td v-on:click="placeTurn(5)" :style="getStyle(5)">{{ moves[cells[5]] }}</td>
-			</tr>
-			<tr>
-				<td v-on:click="placeTurn(6)" :style="getStyle(6)">{{ moves[cells[6]] }}</td>
-				<td v-on:click="placeTurn(7)" :style="getStyle(7)">{{ moves[cells[7]] }}</td>
-				<td v-on:click="placeTurn(8)" :style="getStyle(8)">{{ moves[cells[8]] }}</td>
-			</tr>
-		</table>
+	<div class="row">
+		<center class="col-md-6">
+			<h1>{{ players[turn] }} Turn</h1>
 
-	</center>
+			<table class="game-table">			
+				<tr>
+					<cell :id="0"></cell>
+					<cell :id="1"></cell>
+					<cell :id="2"></cell>
+				</tr>
+				<tr>
+					<cell :id="3"></cell>
+					<cell :id="4"></cell>
+					<cell :id="5"></cell>
+				</tr>
+				<tr>
+					<cell :id="6"></cell>
+					<cell :id="7"></cell>
+					<cell :id="8"></cell>
+				</tr>
+			</table>
+
+		</center>
+
+		<div class="col-md-6">
+			<h4>Scores</h4>
+			<ul style="list-style-type: none;">
+				<li v-for="(player, i) in players" v-if="isPlayer(i)">
+					<b>{{ player }}: </b>{{ scores[i] }}
+				</li>
+			</ul>
+		</div>
+
+	</div>
+
+	<modal name="gameover" :dismissable="false">
+		<div class="modal-header">GAME OVER!!!</div>
+		<div class="modal-body"><center><h1>{{ getWinner().message }}</h1></center></div>
+		<div class="modal-footer">
+			<div class="button-group">
+				<button class="button" style="border-color:lime" @click="playAgain()">Play Again</button>
+				<button class="button" style="border-color: red" @click="quit()">Quit</button>
+			</div>
+		</div>
+	</modal>
+
+	<modal name="quit-game">
+		<div class="modal-header">Confirm</div>
+		<div class="modal-body"><h4>Are you sure to quit game?</h4></div>
+		<div class="modal-footer">
+			<div class="button-group">
+				<button class="button" @click="quit()">Yes</button>
+				<button class="button" @click="$l.closeModal('quit-game')">No</button>
+			</div>
+		</div>
+	</modal>
+
 </div>
 </template>
 
 <style>
+
+.button-group{
+	display: flex;
+	justify-content: space-around;
+}
+
+.button-group > * {
+	min-width: 100px;
+}
+
 .game-table, .game-table > tr > td{
 	border-collapse: collapse;
 	border: solid 1px white;
@@ -42,23 +88,51 @@
 </style>
 
 <script>
+
+import cell from './Cell.vue'
+import ai from './ai.js'
+
 export default{
 	created: function(){
-		console.log(this)
 		this.$store.commit('newgame')
 	},
 	
 	data: function() {
 		return {
-			cells: [
-				'', '', '',
-				'', '', '',
-				'', '', ''
+
+			win_pattern: [
+				[0, 1, 2],
+				[0, 3, 6],
+				[0, 4, 8],
+				[1, 4, 7],
+				[2, 4, 6],
+				[2, 5, 8],
+				[3, 4, 5],
+				[6, 7, 8]
+			],
+
+			trash_talk: [
+				'Bobo tanga tanga',
+				'A.I. na nga lang tinalo pa',
+				'Walang kwenta',
+				'obob, Wik'
 			]
 		}
 	},
 
+	components: {
+		'cell': cell
+	},
+
 	methods: {
+
+		aiTurn: function() {
+			let AI = ai(this.cells, this.move, this.logs[this.logs.length-1])
+			if (this.mode === 0)
+				this.placeTurn(AI.getAIEasy(), true)
+			else 
+				this.placeTurn(AI.getAIHard(), true)
+		},
 
 		addLogs: function(turn, place, move){
 			let logs = {
@@ -69,12 +143,30 @@ export default{
 			this.$store.commit('addLogs', logs)
 		},
 
-		getStyle: function(place) {
-
+		isValidPlace: function(place) {
+			return this.cells[place] === 2
 		},
 
-		isValidPlace: function(place) {
-			return this.cells[place] === ''
+		isPlayer: function(player) {
+			// Player 1 always true
+			if (player == 0) return true
+
+			//If player 2 the mode must be 2 player
+			else if (player == 1 && this.mode == 2) return true
+
+			//if AI the mode must be AI easy or Ai hard
+			else if (player == 2 && (this.mode == 0||this.mode==1)) return true
+
+			else return false
+		},
+
+		playAgain: function() {
+			this.$l.closeModal('gameover')
+			this.$store.commit('newgame')
+			this.$store.commit('resetCell')
+			if (this.turn == 2) {
+				setTimeout(()=>this.aiTurn(), 1000)
+			}
 		},
 
 		placeTurn: function(place, ai) {
@@ -85,25 +177,79 @@ export default{
 			 * then it will not execute
 			 */
 			if (this.turn === 2 && ai == undefined)
-				return
+				return false
 
 			/**
 			 * Check if the place is still
 			 * available if not, the execution will stop
 			 */
 			if (!this.isValidPlace(place))
-				return
+				return false
 
-			this.cells[place] = this.move //Place turn
+			this.$store.commit('updateCell', [place, this.move]) //Place Turn
 			this.addLogs(this.turn, place, this.move) //Add Logs
 			this.$store.commit('switchMove') //Switch Move
 
+			if (this.isGameOver()) {
+				let winner = this.getWinner().winner
+				if (!this.isDraw()) this.$store.commit('incrementScore', winner)
+				this.$l.openModal('gameover')
+			} else if (this.turn === 2) {
+				setTimeout(()=>this.aiTurn(), 1000)
+			}
 
+		},
+
+		quit: function(){
+			this.$store.dispatch('resetGame')
+			this.$router.go(-1)
+		},
+
+		getWinner: function() {
+			if (!this.isGameOver()) return false
+			let current_game = this.logs[this.logs.length-1]
+			let winner = current_game[current_game.length-1].player
+			let message = ''
+
+			if (this.isDraw())
+				message = 'Draw'
+			else if (winner == 0 || winner ==1) 
+				message = this.players[winner]+ ' Win'
+			else 
+				message = this.generateTrashtalk()
+			
+			return {winner, message}
+
+		},
+
+		generateTrashtalk: function() {
+			let ts = this.trash_talk;
+			let random = Math.floor(Math.random()*ts.length);
+			return ts[random];
+		},
+
+		isDraw: function() {
+		    //CHECK IF DRAW
+		    return this.cells.every(x=>x!==2)
+		},
+
+		isGameOver: function() {
+			//CHECK IF THERES ALREADY A WINNER
+			for (var i in this.win_pattern) {
+				let win_pattern = this.win_pattern[i].map((x)=>this.cells[x])
+				if (win_pattern.every(x=>x===0) || win_pattern.every(x=>x===1)) return true
+			}
+
+			return this.isDraw()
 
 		}
 	},
 
 	computed: {
+		cells: function() {
+			return this.$store.state.cells
+		},
+
 		modes: function(){
 			return this.$store.state.modes
 		},
@@ -128,34 +274,36 @@ export default{
 			return this.$store.state.players
 		},
 
-		turn: function(){
-			let current_game = this.logs[this.logs.length-1]; 
+		scores: function(){
+			return this.$store.state.scores
+		},
 
-			/*
-			 * CHECK IF FIRST GAME 
-			 * RETURN PLAYER 1
-			 */
-			if (current_game.length < 1) 
-				return 0
-			else {
-				let last_turn = current_game[current_game.length-1].player
-				
-				/*
-				 * IF LAST TURN IS NOT PLAYER 1
-				 * THEN THE CURRENT TURN IS PLAYER 1
-				 */
-				if (last_turn != 0)
-					return 0
-				/*
-				 * IF 2 PLAYER MODE 
-				 * THEN THE CURRENT TURN IS PLAYER 2
-				 */
-				else if (this.mode == 2)
-					return 1
-				// Return AI
-				else 
-					return 2
+		turn: function(){
+
+			let logs = this.logs
+
+			let current_game = logs[logs.length - 1]
+
+			let negate = (player) => {
+				if (player != 0 ) return 0
+				else if (this.mode == 2) return 1
+				else return 2
 			}
+
+			//IF FIRST GAME
+			if (logs.length == 1 && current_game.length < 1)
+				return 0 //RETURN PLAYER 1
+			else if (logs.length > 1 && current_game.length < 1) {
+				let last_game = logs[logs.length-2]
+				let last_turn = last_game[last_game.length-1]
+				return negate(last_turn.player)
+			} else {
+				let last_turn = current_game[current_game.length-1]
+				return negate(last_turn.player)
+			}
+
+
+			
 
 		}
 	}

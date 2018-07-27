@@ -3,13 +3,20 @@
 		<h1 :class="'title '+lClass">
 			<slot></slot>
 		</h1>
-		<button class="button" style="float: right;margin: 5px;" @click="$router.go(-1)">BACK</button>
+		<button class="button" style="float: right;margin: 5px;" @click="back()">BACK</button>
 	</header>
 </template>
 
 <script>
 export default{
-	props: ['lClass']
+	props: ['lClass'],
+
+	methods: {
+		back: function(){
+			this.$l.openModal('quit-game')
+		}
+	}
+	
 }
 </script>
 

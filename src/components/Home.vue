@@ -64,8 +64,7 @@ export default{
 				{r:0,g:0,b:0},
 				{r:0,g:0,b:0},
 				{r:0,g:0,b:0}
-			],
-			name: ''
+			]
 		}
 	},
 
@@ -95,7 +94,6 @@ export default{
 		},
 
 		submit: function(mode) {
-			this.$store.commit('player1', this.name)
 			this.$store.commit('mode', mode)
 			this.$l.closeModal('menu')
 			this.$router.push({name: 'game'})
@@ -109,6 +107,16 @@ export default{
 
 		modes: function() {
 			return this.$store.state.modes
+		},
+
+		name: {
+			get: function(){
+				return this.players[0]
+			},
+
+			set: function(name){
+				this.$store.commit('player1', name)
+			}
 		}
 	}
 }

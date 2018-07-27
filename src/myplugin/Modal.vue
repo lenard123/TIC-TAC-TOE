@@ -1,7 +1,7 @@
 <template>
 <div class="modal" data-role="modal" :id="name">
 	<div class="modal-content">
-		<span class="close" @click="$l.closeModal(name)">&times;</span>
+		<span class="close" @click="$l.closeModal(name)" v-if="dismissable">&times;</span>
 		<slot></slot>
 	</div>
 </div>
@@ -12,6 +12,11 @@
 require('./modal.css');
 
 export default{
-	props: ['name']
+	props: {
+		name,
+		dismissable: {
+			default: true
+		}
+	}
 }
 </script>

@@ -12,7 +12,12 @@ let routes = [
 	{
 		path: '/game',
 		component: game,
-		name: 'game'
+		name: 'game',
+		beforeEnter: (to, from, next) => {
+			if (from.name != 'home')
+				next({name: 'home'})
+			else next()
+		}
 	}
 ]
 

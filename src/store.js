@@ -7,10 +7,14 @@ let store = {
 		players: ['Player 1', 'Player 2', 'A.I.'], //PLAYERS
 
 		//MOVES
-		moves: ['X', 'O'],
+		moves: ['X', 'O', ''],
 		move: 0, //default X
 
-		logs: []
+		logs: [],
+
+		scores: [0, 0, 0], //SCORES,
+
+		cells: [2, 2, 2, 2, 2, 2, 2, 2, 2]
 	},
 
 	mutations: {
@@ -26,15 +30,48 @@ let store = {
 			state.logs.push([])
 		},
 
+		updateCell: function(state, cell) {
+			state.cells.splice(cell[0], 1, cell[1])
+		},
+
+		resetCell: function(state) {
+			state.cells.splice(0, 9, 2, 2, 2, 2, 2, 2, 2, 2, 2)
+		},
+
+		resetScore: function(state) {
+			state.scores.splice(0, 3, 0, 0, 0)
+		},
+
 		addLogs: function(state, logs) {
 			state.logs[state.logs.length-1].push(logs)
 		},
 
-		switchMove: function(state) {
-			if (state.move == 0)
+		clearLogs: function(state, logs) {
+			state.logs = []
+		},
+
+		switchMove: function(state, move) {
+
+			if (move !== undefined)
+				state.move = move
+			else if (state.move == 0)
 				state.move = 1
 			else
 				state.move = 0
+		},
+
+		incrementScore: function(state, i) {
+			let score = state.scores[i]
+			state.scores.splice(i, 1, ++score)
+		}
+	},
+
+	actions: {
+		resetGame: function(context) {
+			context.commit('resetScore')
+			context.commit('resetCell')
+			context.commit('clearLogs')
+			context.commit('switchMove', 0)
 		}
 	}
 }
