@@ -1,4 +1,4 @@
-import VueRouter from 'vue-router'
+//import VueRouter from 'vue-router'
 import home from './components/Home.vue'
 import game from './components/Game.vue'
 

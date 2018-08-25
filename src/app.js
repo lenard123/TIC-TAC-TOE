@@ -1,9 +1,9 @@
-import 'promise-polyfill/src/polyfill';
+/*import 'promise-polyfill/src/polyfill';
 
 import Vue from 'vue'
 
 import VueRouter from 'vue-router'
-import Vuex from 'vuex'
+import Vuex from 'vuex'*/
 
 import l from './myplugin/l.js' //My Own Plugins
 import router from './routes.js' //Routes
@@ -15,9 +15,9 @@ import lHeader from './components/Header.vue'
 Vue.component('lHeader', lHeader)
 
 
-//Plugins
+/*Plugins
 Vue.use(VueRouter)
-Vue.use(Vuex)
+Vue.use(Vuex)*/
 Vue.use(l)
 
 new Vue({
